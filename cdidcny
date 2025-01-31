@@ -1,0 +1,143 @@
+local Rayfield = loadstring(game:HttpGet('https://sirius.menu/rayfield'))()
+
+-- Membuat jendela dengan konfigurasi
+local Window = Rayfield:CreateWindow({
+    Name = "SkyHub",
+    Icon = 0, -- Tidak menggunakan ikon
+    LoadingTitle = "Sky Hub",
+    LoadingSubtitle = "by Sky",
+    Theme = "Default",
+
+    DisableRayfieldPrompts = false,
+    DisableBuildWarnings = false,
+
+    ConfigurationSaving = {
+        Enabled = true,
+        FolderName = nil,
+        FileName = "Big Hub"
+    },
+
+    Discord = {
+        Enabled = true,
+        Invite = "https://discord.gg/GyMFbcRHh6",
+        RememberJoins = true
+    },
+
+    KeySystem = false,
+    KeySettings = {
+        Title = "Untitled",
+        Subtitle = "Key System",
+        Note = "No method of obtaining the key is provided",
+        FileName = "Key",
+        SaveKey = true,
+        GrabKeyFromSite = false,
+        Key = {"Hello"}
+    }
+})
+
+-- Membuat tab utama
+local Tab = Window:CreateTab("To daoza", "rewind")
+
+-- Tombol untuk teleport dan berinteraksi dengan NPC Pengemudiindonesiaa
+Tab:CreateButton({
+    Name = "Teleport and Interact with NPC",
+    Callback = function()
+        local player = game.Players.LocalPlayer
+        local npc = game.Workspace.Event.NPC.Pengemudiindonesiaa
+        
+        if npc and npc:FindFirstChild("HumanoidRootPart") then
+            -- Teleport ke NPC
+            player.Character:SetPrimaryPartCFrame(npc.HumanoidRootPart.CFrame)
+
+            -- Menunggu ProximityPrompt tersedia
+            local proximityPrompt = npc:FindFirstChild("ProximityPrompt")
+            if proximityPrompt then
+                proximityPrompt:InputHoldBegin()
+                wait(1)
+                proximityPrompt:InputHoldEnd()
+                print(player.Name .. " interacted with the ProximityPrompt!")
+            end
+        end
+    end
+})
+
+-- Tombol untuk teleport ke NPC DA0ZA
+Tab:CreateButton({
+    Name = "To CNYEvent NPC",
+    Callback = function()
+        local player = game.Players.LocalPlayer
+        local npc = game.Workspace.Event.NPC.DA0ZA
+        
+        if npc and npc:FindFirstChild("HumanoidRootPart") then
+            -- Teleport ke NPC
+            player.Character:SetPrimaryPartCFrame(npc.HumanoidRootPart.CFrame)
+
+            -- Menunggu ProximityPrompt tersedia
+            local proximityPrompt = npc:FindFirstChild("ProximityPrompt")
+            if proximityPrompt then
+                proximityPrompt:InputHoldBegin()
+                wait(1)
+                proximityPrompt:InputHoldEnd()
+                print(player.Name .. " interacted with the ProximityPrompt!")
+            end
+        end
+    end
+})
+
+-- Label untuk catatan
+Tab:CreateLabel("Note: Click 2x to auto interact NPC")
+
+-- Membuat tab "Story"
+local StoryTab = Window:CreateTab("Story", "book-open")
+
+-- Tombol untuk Auto Teleport ke Zone1 lalu ke Zone2
+StoryTab:CreateButton({
+    Name = "Auto Teleport",
+    Callback = function()
+        local player = game.Players.LocalPlayer
+        local zone1 = game.Workspace.Scene_Zone.Zone1
+        local zone2 = game.Workspace.Scene_Zone.Zone2
+        
+        if zone1 and zone2 then
+            -- Teleport ke Zone1
+            player.Character:SetPrimaryPartCFrame(zone1.CFrame + Vector3.new(0, 3, 0)) -- Naik 3 unit biar tidak stuck
+            print("Teleported to Zone1")
+
+            -- Tunggu 1 menit (60 detik)
+            wait(50)
+            
+            -- Teleport ke Zone2
+            player.Character:SetPrimaryPartCFrame(zone2.CFrame + Vector3.new(0, 3, 0))
+            print("Teleported to Zone2")
+        else
+            print("Error: Zone1 atau Zone2 tidak ditemukan!")
+        end
+    end
+})
+
+StoryTab:CreateButton({
+    Name = "Goto Snake",
+    Callback = function()
+        local player = game.Players.LocalPlayer
+        local character = player.Character or player.CharacterAdded:Wait()
+        local snakeFolder = game.Workspace:FindFirstChild("Snake")
+
+        if snakeFolder then
+            for _, snake in ipairs(snakeFolder:GetChildren()) do
+                if snake:IsA("Model") and snake:FindFirstChild("HumanoidRootPart") then
+                    -- Pastikan HumanoidRootPart dijadikan PrimaryPart
+                    snake.PrimaryPart = snake:FindFirstChild("HumanoidRootPart")
+
+                    -- Teleport karakter ke Snake
+                    character:SetPrimaryPartCFrame(snake.PrimaryPart.CFrame + Vector3.new(0, 3, 0))
+                    print("Teleported to " .. snake.Name)
+
+                    -- Tunggu 15 detik sebelum teleport ke Snake berikutnya
+                    wait(15)
+                end
+            end
+        else
+            print("Error: Folder 'Snake' tidak ditemukan!")
+        end
+    end
+})
