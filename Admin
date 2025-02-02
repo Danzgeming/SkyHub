@@ -1,0 +1,91 @@
+-- Function to hide player name
+local function HideName()
+    local player = game.Players.LocalPlayer
+    local playerName = player.Name
+    local playerModel = game.Workspace.Lives:FindFirstChild(playerName)
+
+    if playerModel then
+        local head = playerModel:FindFirstChild("Head")
+        if head then
+            local billboardGui = head:FindFirstChild("PlayerBillboard")
+            if billboardGui then
+                local frame = billboardGui:FindFirstChild("Frame")
+                if frame then
+                    local playerNameText = frame:FindFirstChild("PlayerName")
+                    if playerNameText then
+                        playerNameText.Text = "SkyHubHebat"
+                        print("Name successfully hidden!")
+                    else
+                        warn("PlayerName not found!")
+                    end
+                else
+                    warn("Frame not found!")
+                end
+            else
+                warn("PlayerBillboard not found!")
+            end
+        else
+            warn("Head not found!")
+        end
+    else
+        warn("Player name not found in Workspace.Lives!")
+    end
+end
+
+-- Button to hide name
+MiscTab:CreateButton({
+    Name = "Hide Name",
+    Callback = function()
+        HideName()
+    end
+})
+
+-- Custom Rank + Auto Visible
+MiscTab:CreateInput({
+    Name = "Custom Rank",
+    CurrentValue = "",
+    PlaceholderText = "Enter desired Rank",
+    RemoveTextAfterFocusLost = false,
+    Flag = "CustomRank",
+    Callback = function(Text)
+        local player = game.Players.LocalPlayer
+        local playerName = player.Name
+        local playerModel = game.Workspace.Lives:FindFirstChild(playerName)
+
+        if playerModel then
+            local head = playerModel:FindFirstChild("Head")
+            if head then
+                local billboardGui = head:FindFirstChild("PlayerBillboard")
+                if billboardGui then
+                    local frame = billboardGui:FindFirstChild("Frame")
+                    if frame then
+                        local rankText = frame:FindFirstChild("RankName")
+                        if rankText then
+                            rankText.Text = Text
+                            print("Rank successfully changed to: " .. Text)
+                        else
+                            warn("RankName not found!")
+                        end
+                        
+                        -- Enable Auto Visibility
+                        local visibility = frame:FindFirstChild("RankVisibility")
+                        if visibility then
+                            visibility.Visible = true
+                            print("Rank is now visible!")
+                        else
+                            warn("RankVisibility not found!")
+                        end
+                    else
+                        warn("Frame not found!")
+                    end
+                else
+                    warn("PlayerBillboard not found!")
+                end
+            else
+                warn("Head not found!")
+            end
+        else
+            warn("Player name not found in Workspace.Lives!")
+        end
+    end
+})
