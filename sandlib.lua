@@ -35,7 +35,7 @@ function SandLib:MakeWindow(config)
     Title.TextSize = 22
     Title.Parent = TitleFrame
 
-    -- Profile (Username & Roblox Picture)
+    -- Profile Section (Using the profile setup from the original script)
     local ProfileFrame = Instance.new("Frame")
     ProfileFrame.Size = UDim2.new(0, 200, 0, 100)
     ProfileFrame.Position = UDim2.new(0, 0, 0, 40)
@@ -59,7 +59,7 @@ function SandLib:MakeWindow(config)
     UsernameLabel.TextSize = 18
     UsernameLabel.Parent = ProfileFrame
 
-    -- Close and Minimize Buttons
+    -- Close and Minimize Buttons (As in original script)
     local CloseButton = Instance.new("TextButton")
     CloseButton.Size = UDim2.new(0, 40, 0, 40)
     CloseButton.Position = UDim2.new(1, -40, 0, 0)
@@ -106,7 +106,7 @@ function SandLib:MakeWindow(config)
         MainFrame.Visible = false
     end)
 
-    -- Tabs Container
+    -- Tabs Container (As in original script)
     local TabsContainer = Instance.new("Frame")
     TabsContainer.Size = UDim2.new(0, 200, 1, -140)
     TabsContainer.Position = UDim2.new(0, 0, 0, 140)
