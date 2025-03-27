@@ -1,123 +1,74 @@
-local SandLib = {}
+local UI = {}
 
-local Players = game:GetService("Players")
-local LocalPlayer = Players.LocalPlayer
+function UI:CreateFrame(parent, size, position, transparency, color)
+    local frame = Instance.new("Frame")
+    frame.Size = UDim2.new(size.X, 0, size.Y, 0)
+    frame.Position = UDim2.new(position.X, 0, position.Y, 0)
+    frame.BackgroundTransparency = transparency or 0
+    frame.BackgroundColor3 = color or Color3.fromRGB(25, 25, 25)
+    frame.BorderSizePixel = 0
+    frame.Parent = parent
 
--- Fungsi buat Window UI
-function SandLib:MakeWindow(config)
-    local screenGui = Instance.new("ScreenGui", LocalPlayer:FindFirstChild("PlayerGui") or LocalPlayer:WaitForChild("PlayerGui"))
+    -- Tambahkan UIStroke agar ada efek glowing
+    local stroke = Instance.new("UIStroke", frame)
+    stroke.Thickness = 2
+    stroke.Color = Color3.fromRGB(100, 100, 255)
+    stroke.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
 
-    local window = Instance.new("Frame")
-    window.Size = UDim2.new(0.3, 0, 0.4, 0)
-    window.Position = UDim2.new(0.35, 0, 0.3, 0)
-    window.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
-    window.BackgroundTransparency = 0.2
-    window.Parent = screenGui
-
-    local uiCorner = Instance.new("UICorner", window)
-    uiCorner.CornerRadius = UDim.new(0, 10)
-
-    local titleLabel = Instance.new("TextLabel", window)
-    titleLabel.Size = UDim2.new(1, 0, 0.15, 0)
-    titleLabel.BackgroundTransparency = 1
-    titleLabel.Text = config.Name or "SandLib UI"
-    titleLabel.Font = Enum.Font.GothamBold
-    titleLabel.TextSize = 20
-    titleLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
-    titleLabel.Parent = window
-
-    return window
+    return frame
 end
 
--- Fungsi buat Tab
-function SandLib:MakeTab(config)
-    local tab = Instance.new("Frame")
-    tab.Size = UDim2.new(1, 0, 0.85, 0)
-    tab.BackgroundTransparency = 1
-    tab.Parent = config.Parent
-
-    return tab
-end
-
--- Fungsi buat Tombol
-function SandLib:AddButton(config)
+function UI:CreateButton(parent, size, position, text)
     local button = Instance.new("TextButton")
-    button.Size = UDim2.new(0.8, 0, 0.15, 0)
-    button.Position = UDim2.new(0.1, 0, 0, 0)
-    button.BackgroundColor3 = Color3.fromRGB(50, 150, 250)
-    button.Text = config.Name or "Click"
+    button.Size = UDim2.new(size.X, 0, size.Y, 0)
+    button.Position = UDim2.new(position.X, 0, position.Y, 0)
+    button.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
+    button.Text = text or "Click Me"
+    button.TextColor3 = Color3.fromRGB(255, 255, 255)
     button.Font = Enum.Font.GothamBold
-    button.TextSize = 16
-    button.Parent = config.Parent
+    button.TextSize = 18
+    button.AutoButtonColor = false
+    button.Parent = parent
 
-    local uiCorner = Instance.new("UICorner", button)
-    uiCorner.CornerRadius = UDim.new(0, 8)
+    -- Tambahkan animasi hover
+    button.MouseEnter:Connect(function()
+        game:GetService("TweenService"):Create(
+            button,
+            TweenInfo.new(0.2, Enum.EasingStyle.Quad, Enum.EasingDirection.Out),
+            {BackgroundColor3 = Color3.fromRGB(80, 80, 255)}
+        ):Play()
+    end)
 
-    button.MouseButton1Click:Connect(function()
-        if config.Callback then
-            config.Callback()
-        end
+    button.MouseLeave:Connect(function()
+        game:GetService("TweenService"):Create(
+            button,
+            TweenInfo.new(0.2, Enum.EasingStyle.Quad, Enum.EasingDirection.Out),
+            {BackgroundColor3 = Color3.fromRGB(50, 50, 50)}
+        ):Play()
     end)
 
     return button
 end
 
--- Fungsi buat Slider
-function SandLib:AddSlider(config)
-    local sliderFrame = Instance.new("Frame")
-    sliderFrame.Size = UDim2.new(0.8, 0, 0.1, 0)
-    sliderFrame.Position = UDim2.new(0.1, 0, 0, 0)
-    sliderFrame.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
-    sliderFrame.Parent = config.Parent
+function UI:CreateTextLabel(parent, size, position, text)
+    local label = Instance.new("TextLabel")
+    label.Size = UDim2.new(size.X, 0, size.Y, 0)
+    label.Position = UDim2.new(position.X, 0, position.Y, 0)
+    label.BackgroundTransparency = 1
+    label.Text = text or "Modern UI"
+    label.TextColor3 = Color3.fromRGB(255, 255, 255)
+    label.Font = Enum.Font.GothamBold
+    label.TextSize = 22
+    label.Parent = parent
 
-    local slider = Instance.new("TextButton")
-    slider.Size = UDim2.new(0, 20, 1, 0)
-    slider.BackgroundColor3 = Color3.fromRGB(50, 150, 250)
-    slider.Parent = sliderFrame
+    -- Tambahkan efek gradient pada teks
+    local gradient = Instance.new("UIGradient", label)
+    gradient.Color = ColorSequence.new{
+        ColorSequenceKeypoint.new(0, Color3.fromRGB(0, 255, 255)),
+        ColorSequenceKeypoint.new(1, Color3.fromRGB(255, 0, 255))
+    }
 
-    slider.MouseButton1Down:Connect(function()
-        local mouse = LocalPlayer:GetMouse()
-        local min = sliderFrame.AbsolutePosition.X
-        local max = min + sliderFrame.AbsoluteSize.X
-
-        while game:GetService("UserInputService"):IsMouseButtonPressed(Enum.UserInputType.MouseButton1) do
-            local percent = math.clamp((mouse.X - min) / (max - min), 0, 1)
-            slider.Size = UDim2.new(percent, 0, 1, 0)
-
-            if config.Callback then
-                config.Callback(math.floor(percent * (config.Max or 100)))
-            end
-            wait()
-        end
-    end)
-
-    return slider
+    return label
 end
 
--- Fungsi buat Toggle
-function SandLib:AddToggle(config)
-    local toggleButton = Instance.new("TextButton")
-    toggleButton.Size = UDim2.new(0.8, 0, 0.1, 0)
-    toggleButton.Position = UDim2.new(0.1, 0, 0, 0)
-    toggleButton.BackgroundColor3 = Color3.fromRGB(150, 50, 50)
-    toggleButton.Text = "OFF"
-    toggleButton.Parent = config.Parent
-
-    local uiCorner = Instance.new("UICorner", toggleButton)
-    uiCorner.CornerRadius = UDim.new(0, 8)
-
-    local state = false
-    toggleButton.MouseButton1Click:Connect(function()
-        state = not state
-        toggleButton.BackgroundColor3 = state and Color3.fromRGB(50, 150, 250) or Color3.fromRGB(150, 50, 50)
-        toggleButton.Text = state and "ON" or "OFF"
-
-        if config.Callback then
-            config.Callback(state)
-        end
-    end)
-
-    return toggleButton
-end
-
-return SandLib
+return UI
