@@ -1,74 +1,77 @@
 local UI = {}
 
-function UI:CreateFrame(parent, size, position, transparency, color)
-    local frame = Instance.new("Frame")
-    frame.Size = UDim2.new(size.X, 0, size.Y, 0)
-    frame.Position = UDim2.new(position.X, 0, position.Y, 0)
-    frame.BackgroundTransparency = transparency or 0
-    frame.BackgroundColor3 = color or Color3.fromRGB(25, 25, 25)
-    frame.BorderSizePixel = 0
-    frame.Parent = parent
+local TweenService = game:GetService("TweenService")
 
-    -- Tambahkan UIStroke agar ada efek glowing
+-- Buat Window Utama
+function UI:MakeWindow(config)
+    local screenGui = Instance.new("ScreenGui")
+    screenGui.Name = config.Name or "CustomUI"
+    screenGui.Parent = game.Players.LocalPlayer:WaitForChild("PlayerGui")
+
+    local frame = Instance.new("Frame")
+    frame.Size = UDim2.new(0.3, 0, 0.4, 0)
+    frame.Position = UDim2.new(0.35, 0, 0.3, 0)
+    frame.BackgroundTransparency = 0.2
+    frame.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
+    frame.BorderSizePixel = 0
+    frame.Parent = screenGui
+
+    -- Tambahkan Efek Glow
     local stroke = Instance.new("UIStroke", frame)
-    stroke.Thickness = 2
+    stroke.Thickness = 3
     stroke.Color = Color3.fromRGB(100, 100, 255)
     stroke.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
 
     return frame
 end
 
-function UI:CreateButton(parent, size, position, text)
+-- Buat Tab Baru
+function UI:MakeTab(config)
+    local tab = Instance.new("Frame")
+    tab.Size = UDim2.new(1, 0, 0.1, 0)
+    tab.BackgroundTransparency = 1
+    tab.Parent = config.Parent
+
+    local textLabel = Instance.new("TextLabel")
+    textLabel.Size = UDim2.new(1, 0, 1, 0)
+    textLabel.Text = config.Name or "Tab"
+    textLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+    textLabel.Font = Enum.Font.GothamBold
+    textLabel.TextSize = 20
+    textLabel.BackgroundTransparency = 1
+    textLabel.Parent = tab
+
+    return tab
+end
+
+-- Buat Tombol
+function UI:AddButton(config)
     local button = Instance.new("TextButton")
-    button.Size = UDim2.new(size.X, 0, size.Y, 0)
-    button.Position = UDim2.new(position.X, 0, position.Y, 0)
+    button.Size = UDim2.new(0.8, 0, 0.2, 0)
+    button.Position = UDim2.new(0.1, 0, 0.3, 0)
     button.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
-    button.Text = text or "Click Me"
+    button.Text = config.Name or "Button"
     button.TextColor3 = Color3.fromRGB(255, 255, 255)
     button.Font = Enum.Font.GothamBold
     button.TextSize = 18
-    button.AutoButtonColor = false
-    button.Parent = parent
+    button.Parent = config.Parent
 
-    -- Tambahkan animasi hover
+    -- Animasi Hover
     button.MouseEnter:Connect(function()
-        game:GetService("TweenService"):Create(
-            button,
-            TweenInfo.new(0.2, Enum.EasingStyle.Quad, Enum.EasingDirection.Out),
-            {BackgroundColor3 = Color3.fromRGB(80, 80, 255)}
-        ):Play()
+        TweenService:Create(button, TweenInfo.new(0.2), {BackgroundColor3 = Color3.fromRGB(80, 80, 255)}):Play()
     end)
 
     button.MouseLeave:Connect(function()
-        game:GetService("TweenService"):Create(
-            button,
-            TweenInfo.new(0.2, Enum.EasingStyle.Quad, Enum.EasingDirection.Out),
-            {BackgroundColor3 = Color3.fromRGB(50, 50, 50)}
-        ):Play()
+        TweenService:Create(button, TweenInfo.new(0.2), {BackgroundColor3 = Color3.fromRGB(50, 50, 50)}):Play()
+    end)
+
+    button.MouseButton1Click:Connect(function()
+        if config.Callback then
+            config.Callback()
+        end
     end)
 
     return button
-end
-
-function UI:CreateTextLabel(parent, size, position, text)
-    local label = Instance.new("TextLabel")
-    label.Size = UDim2.new(size.X, 0, size.Y, 0)
-    label.Position = UDim2.new(position.X, 0, position.Y, 0)
-    label.BackgroundTransparency = 1
-    label.Text = text or "Modern UI"
-    label.TextColor3 = Color3.fromRGB(255, 255, 255)
-    label.Font = Enum.Font.GothamBold
-    label.TextSize = 22
-    label.Parent = parent
-
-    -- Tambahkan efek gradient pada teks
-    local gradient = Instance.new("UIGradient", label)
-    gradient.Color = ColorSequence.new{
-        ColorSequenceKeypoint.new(0, Color3.fromRGB(0, 255, 255)),
-        ColorSequenceKeypoint.new(1, Color3.fromRGB(255, 0, 255))
-    }
-
-    return label
 end
 
 return UI
